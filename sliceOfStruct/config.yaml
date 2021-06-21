@@ -1,0 +1,25 @@
+app_name: awesome web
+log_level: DEBUG
+mysqls:
+- database: LAL
+  ip: 127.0.0.1
+  password: "123456"
+  port: 3306
+  user: dj
+- database: cool
+  ip: 0.0.0.0
+  password: "11111"
+  port: 7706
+  user: gj
+redis:
+  ip: 127.0.0.1
+  port: 5381
+server:
+  ports:
+  - 10000
+  - 10001
+  - 10002
+  protocols:
+  - http
+  - https
+  - tcp

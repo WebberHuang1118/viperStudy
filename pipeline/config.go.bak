@@ -1,0 +1,26 @@
+package main
+
+//InitiatorConfig represents initiator's configuration
+type InitiatorConfig struct {
+	Kind   string `mapstructure:"kind" json:"kind"`
+	Name   string `mapstructure:"name" json:"name"`
+	Target string `mapstructure:"target" json:"target"`
+}
+
+//TriggerConfig represents trigger's configuration
+type TriggerConfig struct {
+	Kind   string `mapstructure:"kind" json:"kind"`
+	Name   string `mapstructure:"name" json:"name"`
+	Target string `mapstructure:"target" json:"target"`
+}
+
+//ConnectConfig contains the extend info for one stage
+type ConnectConfig struct {
+	Initiator InitiatorConfig `mapstructure:"initiator" json:"initiator"`
+	Trigger   TriggerConfig   `mapstructure:"trigger" json:"trigger"`
+}
+
+//RoamingConfig contains the roaming info
+type RoamingConfig struct {
+	Connects map[string]ConnectConfig `mapstructure:"connects" json:"connects"`
+}

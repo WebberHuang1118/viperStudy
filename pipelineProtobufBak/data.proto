@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package main;
+
+message InitiatorConfig {
+    string kind = 1;
+    string name = 2;
+    string target = 3;
+}
+
+message TriggerConfig {
+    string kind = 1;
+    string name = 2;
+    string target = 3;
+}
+
+message ConnectConfig {
+    InitiatorConfig initiator = 1;
+    TriggerConfig trigger = 2;
+}
+
+message RoamingConfig {
+    map<string, ConnectConfig> connects = 1;
+}
