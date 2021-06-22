@@ -1,0 +1,36 @@
+1. cmdline
+$ go run cmdline/main.go
+
+2. env
+$ go run env/main.g
+
+3. setAndWrite
+$ go run setAndWrite/main.go
+
+4. sliceOfStruct
+$ cd sliceOfStruct/
+$ go run main.go
+$ cd ..
+
+5. unmarshal
+$ go run unmarshal/main.go
+
+6. watch
+$ go run watch/main.go
+
+7. etcd
+    a. enable etcd with version2
+    $ etcd --enable-v2=true
+
+    b. install etcdkeeper and open on port 50051
+    $  etcdkeeper/etcdkeeper -p 50051
+
+    c. set config.yml to etcd "/config/config.yml"
+    
+    d. check app_name
+    $ go run etcd/main.go 
+
+    e. run http server on port 8080
+    $  go run etcd/runtime/main.go
+
+    f. change config.yml on etcdkeeper and check the change on http://127.0.0.1:8080/
