@@ -1,0 +1,17 @@
+Server:
+  id: 1
+  tcpbind: 172.11.22.33:6699
+  dashboardbind: 172.11.22.33:6006
+  maxsize : 10m
+  private:
+    james:
+      Team: Lakers
+      Name: Lebrone James
+    curry:
+      Team: Warriors
+      Name: Stephen Curry
+    country: USA
+    sizes:
+      - 10
+      - 20
+      - 30  

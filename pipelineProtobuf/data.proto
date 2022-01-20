@@ -17,6 +17,7 @@ message TriggerConfig {
 message ConnectConfig {
     InitiatorConfig initiator = 1;
     TriggerConfig trigger = 2;
+    map<string, bytes> private = 3;
 }
 
 message RoamingConfig {
