@@ -1,12 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"gopkg.in/yaml.v2"
 
 	//goflag "flag"
 	"reflect"
@@ -23,13 +23,12 @@ type Config struct {
 
 type Player struct {
 	Name   string
-	Team   string
 	Number int
+	Team   []string
 }
 
 type NBA struct {
-	James   Player
-	Curry   Player
+	Players []Player
 	Country string
 	Sizes   []int
 }
@@ -40,13 +39,6 @@ type Server struct {
 	DashboardBind string
 	MaxSize       *datasize.ByteSize
 	Private       []byte
-}
-
-type transit struct {
-	James   []byte
-	Curry   []byte
-	Country []byte
-	Sizes   []byte
 }
 
 func main() {
@@ -89,13 +81,19 @@ func main() {
 		fmt.Println("The error from Unmarshal is : ", err)
 	}
 
-	fmt.Println("watch the config of Cfg private is : ", Cfg.Server.Private)
+	//fmt.Println("watch the config of Cfg private is : ", Cfg.Server.Private)
 
-	nba := NBA{}
-	if err := json.Unmarshal(Cfg.Server.Private, &nba); err != nil {
-		log.Printf("Unmarshal james failed %v\n", err)
+	nba := NBA{Players: []Player{}}
+	if err := yaml.Unmarshal(Cfg.Server.Private, &nba); err != nil {
+		log.Fatalf("Unmarshal james failed %v\n", err)
 	}
 	log.Printf("nba:%v\n", nba)
+
+	// nba := NBA{}
+	// if err := mapstructure.WeakDecode(Cfg.Server.Private, &nba); err != nil {
+	// 	log.Printf("Decode private failed %v\n", err)
+	// }
+	// log.Printf("nba:%v\n", nba)
 
 	// var t transit
 	// if err := mapstructure.WeakDecode(Cfg.Server.Private, &t); err != nil {
@@ -159,12 +157,13 @@ func myHookFunc() mapstructure.DecodeHookFunc {
 			return data, nil
 		}
 
-		fmt.Printf("f %v\n", f)
-		fmt.Printf("t %v\n", t)
+		// fmt.Printf("f %v\n", f)
+		// fmt.Printf("t %v\n", t)
+		// fmt.Printf("data %v\n", data)
 
-		bytes, err := json.Marshal(data)
+		bytes, err := yaml.Marshal(data)
 		if err != nil {
-			fmt.Printf("marshal data fail %v\n", err)
+			log.Fatalf("marshal data fail %v", err)
 		}
 
 		return bytes, nil

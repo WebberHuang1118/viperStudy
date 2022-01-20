@@ -5,33 +5,34 @@ import (
 	"log"
 
 	"github.com/spf13/viper"
+	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
-	AppName  string `mapstructure:"app_name"`
-	LogLevel string `mapstructure:"log_level"`
+	AppName  string
+	LogLevel string
 
-	MySQL  MySQLConfig  `mapstructure:"mysql"`
-	Redis  RedisConfig  `mapstructure:"redis"`
-	Server ServerConfig `mapstructure:"server"`
+	MySQL  MySQLConfig
+	Redis  RedisConfig
+	Server ServerConfig
 }
 
 type MySQLConfig struct {
-	Database string `mapstructure:"database"`
-	IP       string `mapstructure:"ip"`
-	Password string `mapstructure:"password"`
-	Port     int    `mapstructure:"port"`
-	User     string `mapstructure:"user"`
+	Database string
+	IP       string
+	Password string
+	Port     int
+	User     string
 }
 
 type RedisConfig struct {
-	IP   string `mapstructure:"ip"`
-	Port int    `mapstructure:"port"`
+	IP   string
+	Port int
 }
 
 type ServerConfig struct {
-	Ports     []int    `mapstructure:"ports"`
-	Protocols []string `mapstructure:"protocols"`
+	Ports     []int
+	Protocols []string
 }
 
 func main() {
@@ -39,15 +40,28 @@ func main() {
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
 
-	viper.Set("redis.port", 5381)
+	//viper.Set("redis.port", 5381)
 
 	err := viper.ReadInConfig()
 	if err != nil {
 		log.Fatal("read config failed: %v", err)
 	}
 
-	var c Config
-	viper.Unmarshal(&c)
+	// var c Config
+	// viper.Unmarshal(&c)
 
-	fmt.Println(c)
+	// fmt.Println(c)
+
+	c := viper.AllSettings()
+	bs, err := yaml.Marshal(c)
+	if err != nil {
+		log.Fatalf("unable to marshal config to YAML: %v", err)
+	}
+	fmt.Printf("bs:%v\n", string(bs))
+
+	var cfg Config
+	if err != yaml.Unmarshal(bs, &cfg) {
+		log.Fatalf("unable to unmarshal binary to config: %v", err)
+	}
+	fmt.Printf("cfg:%v\n", cfg)
 }

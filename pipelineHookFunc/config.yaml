@@ -1,0 +1,22 @@
+pipeline:
+  services:
+    - name: observer
+      uri: unix:///tmp/observer
+    - name: analyzer
+      uri: unix:///tmp/analyzer
+      private:
+        pools:
+          - value: 5
+            sizes:
+              - 7000
+              - 7100
+              - 7200
+          - value: 6
+            sizes:
+              - 8000
+              - 8100
+              - 8200
+      actioner:
+        uri: unix:///tmp/actioner  
+    - name: director
+      uri: unix:///tmp/dr

@@ -1,5 +1,5 @@
-app_name: awesome web
-log_level: DEBUG
+appname: awesome web
+loglevel: DEBUG
 mysql:
   database: awesome
   ip: 127.0.0.1

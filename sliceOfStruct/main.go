@@ -5,59 +5,68 @@ import (
 	"log"
 
 	"github.com/spf13/viper"
+	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
-	AppName  string `mapstructure:"app_name"`
-	LogLevel string `mapstructure:"log_level"`
+	AppName  string
+	LogLevel string
 
-	MySQLS []MySQLConfig `mapstructure:"mysqls"`
-	Redis  RedisConfig   `mapstructure:"redis"`
-	Server ServerConfig  `mapstructure:"server"`
+	MySQLS []MySQLConfig
+	Redis  RedisConfig
+	Server ServerConfig
 }
 
 type MySQLConfig struct {
-	Database string `mapstructure:"database"`
-	IP       string `mapstructure:"ip"`
-	Password string `mapstructure:"password"`
-	Port     int    `mapstructure:"port"`
-	User     string `mapstructure:"user"`
+	Database string
+	IP       string
+	Password string
+	Port     int
+	User     string
+}
+
+type Locations struct {
+	Locations []MySQLConfig
 }
 
 type RedisConfig struct {
-	IP   string `mapstructure:"ip"`
-	Port int    `mapstructure:"port"`
+	IP   string
+	Port int
 }
 
 type ServerConfig struct {
-	Ports     []int    `mapstructure:"ports"`
-	Protocols []string `mapstructure:"protocols"`
+	Ports     []int
+	Protocols []string
 }
 
 func main() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
-
-	viper.Set("redis.port", 5381)
-
 	err := viper.ReadInConfig()
 	if err != nil {
 		log.Fatal("read config failed: %v", err)
 	}
 
-	// var c Config
-	// viper.Unmarshal(&c)
-	// fmt.Println(c)
+	//mysqls := []MySQLConfig{}
+	subCfg := viper.Sub("mysqls")
 
-	var mysqls []MySQLConfig
-	viper.UnmarshalKey("mysqls", &mysqls)
-	fmt.Println(mysqls)
+	c := subCfg.AllSettings()
+	bs, err := yaml.Marshal(c)
+	if err != nil {
+		log.Fatalf("unable to marshal sub config to YAML: %v", err)
+	}
+	fmt.Printf("bs:\n%v\n", string(bs))
 
-	mysqls[0].Database = "MIA"
-	viper.Set("mysqls", mysqls)
-	viper.UnmarshalKey("mysqls", &mysqls)
-	fmt.Println(mysqls)
+	// viper.UnmarshalKey("mysqls", &mysqls)
+	// fmt.Println(mysqls)
 
-	//viper.WriteConfig()
+	loc := Locations{Locations: []MySQLConfig{}}
+	// if err := subCfg.Unmarshal(&loc); err != nil {
+	// 	log.Fatalf("unable to unmarshal sub config to struct: %v", err)
+	// }
+	if err != yaml.Unmarshal(bs, &loc) {
+		log.Fatalf("unable to unmarshal binary to loc: %v", err)
+	}
+	fmt.Println(loc)
 }

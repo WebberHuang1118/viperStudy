@@ -4,14 +4,19 @@ Server:
   dashboardbind: 172.11.22.33:6006
   maxsize : 10m
   private:
-    james:
-      name: Lebrone James
-      team: Los Angeles Lakers
-      number: 23
-    curry:
-      name: Stephen Curry
-      team: Golen State Warriors
-      number: 9
+    players:
+      - name: Lebrone
+        number: 23
+        team:
+          - Cavs
+          - Heat
+          - Lakers
+      - name: James
+        number: 23
+        team:
+          - OKC
+          - HOU
+          - NET
     country: USA
     sizes:
       - 10
