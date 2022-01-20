@@ -5,13 +5,15 @@ Server:
   maxsize : 10m
   private:
     james:
-      Team: Lakers
-      Name: Lebrone James
+      name: Lebrone James
+      team: Los Angeles Lakers
+      number: 23
     curry:
-      Team: Warriors
-      Name: Stephen Curry
+      name: Stephen Curry
+      team: Golen State Warriors
+      number: 9
     country: USA
     sizes:
       - 10
       - 20
-      - 30  
+      - 30

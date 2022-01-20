@@ -21,9 +21,17 @@ type Config struct {
 	Server Server
 }
 
-type Data struct {
-	Team string
-	Name string
+type Player struct {
+	Name   string
+	Team   string
+	Number int
+}
+
+type NBA struct {
+	James   Player
+	Curry   Player
+	Country string
+	Sizes   []int
 }
 
 type Server struct {
@@ -31,7 +39,7 @@ type Server struct {
 	Tcp_Bind      string
 	DashboardBind string
 	MaxSize       *datasize.ByteSize
-	Private       map[string][]byte
+	Private       []byte
 }
 
 type transit struct {
@@ -55,7 +63,7 @@ func main() {
 	viper.AddConfigPath(".")
 	err := viper.ReadInConfig()
 	if err != nil {
-		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+		panic(fmt.Errorf("fatal error config file: %s \n", err))
 	}
 
 	// 查看並重新讀取配置文件
@@ -67,7 +75,7 @@ func main() {
 	fmt.Printf("watch the tcp_bind : %s\n", viper.Get("server.TcpBind"))
 	fmt.Printf("watch the dash_bind : %s\n", viper.Get("server.DashboardBind"))
 
-	Cfg := Config{Server: Server{Private: make(map[string][]byte)}}
+	Cfg := Config{}
 	//fmt.Println("watch the viper is : ", viper.GetViper())
 
 	optDecode := viper.DecodeHook(mapstructure.ComposeDecodeHookFunc(
@@ -78,45 +86,46 @@ func main() {
 
 	err = viper.Unmarshal(&Cfg, optDecode)
 	if err != nil {
-
+		fmt.Println("The error from Unmarshal is : ", err)
 	}
 
-	//err = viper.Unmarshal(&Cfg)
-	//if err != nil {
-	//	fmt.Println("The error from Unmarshal is : ", err)
-	//}
 	fmt.Println("watch the config of Cfg private is : ", Cfg.Server.Private)
-	//fmt.Printf("watch the config of MaxSize : %v\n", Cfg.Server.MaxSize)
 
-	var t transit
-	if err := mapstructure.WeakDecode(Cfg.Server.Private, &t); err != nil {
-		log.Printf("Decode private failed %v\n", err)
-	}
-	//fmt.Println("transit Data is : ", t.Data)
-
-	james := Data{}
-	if err := json.Unmarshal([]byte(t.James), &james); err != nil {
+	nba := NBA{}
+	if err := json.Unmarshal(Cfg.Server.Private, &nba); err != nil {
 		log.Printf("Unmarshal james failed %v\n", err)
 	}
-	log.Printf("james:%v\n", james)
+	log.Printf("nba:%v\n", nba)
 
-	curry := Data{}
-	if err := json.Unmarshal([]byte(t.Curry), &curry); err != nil {
-		log.Printf("Unmarshal curry failed %v\n", err)
-	}
-	log.Printf("curry:%v\n", curry)
+	// var t transit
+	// if err := mapstructure.WeakDecode(Cfg.Server.Private, &t); err != nil {
+	// 	log.Printf("Decode private failed %v\n", err)
+	// }
+	// //fmt.Println("transit Data is : ", t.Data)
 
-	var country string
-	if err := json.Unmarshal([]byte(t.Country), &country); err != nil {
-		log.Printf("Unmarshal country failed %v\n", err)
-	}
-	log.Printf("country:%v\n", country)
+	// james := Data{}
+	// if err := json.Unmarshal([]byte(t.James), &james); err != nil {
+	// 	log.Printf("Unmarshal james failed %v\n", err)
+	// }
+	// log.Printf("james:%v\n", james)
 
-	sizes := []int{}
-	if err := json.Unmarshal([]byte(t.Sizes), &sizes); err != nil {
-		log.Printf("Unmarshal size failed %v\n", err)
-	}
-	log.Printf("size:%v\n", sizes)
+	// curry := Data{}
+	// if err := json.Unmarshal([]byte(t.Curry), &curry); err != nil {
+	// 	log.Printf("Unmarshal curry failed %v\n", err)
+	// }
+	// log.Printf("curry:%v\n", curry)
+
+	// var country string
+	// if err := json.Unmarshal([]byte(t.Country), &country); err != nil {
+	// 	log.Printf("Unmarshal country failed %v\n", err)
+	// }
+	// log.Printf("country:%v\n", country)
+
+	// sizes := []int{}
+	// if err := json.Unmarshal([]byte(t.Sizes), &sizes); err != nil {
+	// 	log.Printf("Unmarshal size failed %v\n", err)
+	// }
+	// log.Printf("size:%v\n", sizes)
 }
 
 func StringToByteSizesHookFunc() mapstructure.DecodeHookFunc {
@@ -146,29 +155,18 @@ func myHookFunc() mapstructure.DecodeHookFunc {
 		t reflect.Type,
 		data interface{}) (interface{}, error) {
 
-		// if f.Kind() != reflect.Map {
-		// 	return data, nil
-		// }
-
-		if t != reflect.TypeOf(map[string][]byte{}) {
+		if t != reflect.TypeOf([]byte{}) {
 			return data, nil
 		}
 
 		fmt.Printf("f %v\n", f)
 		fmt.Printf("t %v\n", t)
 
-		// Convert it by parsing
-		raw := data.(map[string]interface{})
-		ret := map[string][]byte{}
-		for k, v := range raw {
-			fmt.Printf("k:%v v:%v\n", k, v)
-			bytes, err := json.Marshal(v)
-			if err != nil {
-				fmt.Printf("marshal fail %v\n", err)
-			}
-			ret[k] = bytes
+		bytes, err := json.Marshal(data)
+		if err != nil {
+			fmt.Printf("marshal data fail %v\n", err)
 		}
 
-		return ret, nil
+		return bytes, nil
 	}
 }
