@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-package main;
+option go_package = "github.com/webber/viperStudy/pipelineProtobuf/data";
+
+package data;
 
 message ActionerInfo {
     string uri = 1;
@@ -23,3 +25,7 @@ message PipelineConfig {
 message RoamingConfig {
     PipelineConfig pipeline = 1;
 }
+
+service Greeter {
+    rpc SayHello (RoamingConfig) returns (RoamingConfig) {}
+  }

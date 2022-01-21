@@ -1,0 +1,35 @@
+pipeline:
+  services:
+    - name: observer
+      uri: unix:///tmp/observer
+    - name: analyzer
+      uri: unix:///tmp/analyzer
+      private:
+        name: nba
+        teams:
+          - name: lakers
+            city: los angels
+          - name: warrirors
+            city: goden state
+          - name: nets
+            city: new jersey
+        country: usa  
+        division:
+          - atlantic
+          - central
+          - southeast
+          - northwest
+          - pacific
+          - southwest
+      actioner:
+        uri: unix:///tmp/actioner
+        private:
+          name: taiwan
+          population: 23000000
+          capital: taipei
+          language:
+            - mandarin
+            - taiwaness
+            - hakka
+    - name: director
+      uri: unix:///tmp/dr
