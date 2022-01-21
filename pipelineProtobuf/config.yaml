@@ -1,20 +1,22 @@
-connects:
-  roster:
-    initiator:
-      kind: remote-grpc
-      name: Roster-Initiator
-      target: 0.0.0.0:50053
-  profile:
-    initiator:
-      kind: remote-grpc
-      name: Profile-Initiator
-      target: 0.0.0.0:50051
-    trigger:
-      kind: remote-grpc
-      name: Profile-Trigger
-      target: 0.0.0.0:50054
-  tail:
-    initiator:
-      kind: remote-grpc
-      name: Tail-Initiator
-      target: 0.0.0.0:50052
+pipeline:
+  services:
+    - name: observer
+      uri: unix:///tmp/observer
+    - name: analyzer
+      uri: unix:///tmp/analyzer
+      private:
+        pools:
+          - value: 5
+            sizes:
+              - 7000
+              - 7100
+              - 7200
+          - value: 6
+            sizes:
+              - 8000
+              - 8100
+              - 8200
+      actioner:
+        uri: unix:///tmp/actioner
+    - name: director
+      uri: unix:///tmp/dr
