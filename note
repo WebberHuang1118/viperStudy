@@ -34,3 +34,7 @@ $ go run watch/main.go
     $  go run etcd/runtime/main.go
 
     f. change config.yml on etcdkeeper and check the change on http://127.0.0.1:8080/
+
+8 pipelineProtobuf
+$ cd pipelineProtobuf
+$ go run main.go data.pb.go
